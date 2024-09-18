@@ -1,0 +1,14 @@
+#notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #1e2940;
+    padding: 15px;
+    border-radius: 5px;
+    /* display: none; */
+    z-index: 1000000000000;
+}
+
+#notifications > div.header > strong {
+    color: white;
+}

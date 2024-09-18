@@ -1,0 +1,9 @@
+body {
+    padding-top: 56px; /* Ajuste o valor para o tamanho da sua barra de navegação */
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 50%;
+    }
+}

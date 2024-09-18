@@ -1,8 +1,11 @@
 <div id="notifications" style="display: {% if messages %}block{% else %}none{% endif %};">
-    <div class="header">
+    <div class="header" style="display: flex; align-items: center; justify-content: space-between;">
         <strong>Notificação</strong>
-        <i class="bi bi-x closeNotificationButton"  onclick="document.querySelector('#notifications').remove()"
-           style="position: absolute;right: 10px;"></i>
+        <button class="closeNotificationButton" onclick="document.querySelector('#notifications').remove()"
+                style="background: none; border: none; cursor: pointer; font-size: 20px; color: white; transition: color 0.3s;"
+                aria-label="Fechar notificação">
+            &times;
+        </button>
     </div>
     {% for message in messages %}
         <div style="color: {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}red{% else %}green{% endif %};">

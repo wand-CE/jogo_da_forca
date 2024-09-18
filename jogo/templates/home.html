@@ -1,86 +1,83 @@
 {% extends 'base.html' %}
 {% block conteudo %}
     <header class="hero-section">
-    <div class="container">
-      <h1 class="display-4">Jogo da Forca Educativa</h1>
-      <p class="lead ">Aprenda enquanto se diverte! Ideal para professores e alunos.</p>
-      <a href="#jogar" class="btn btn-light btn-lg mt-3">Jogar Agora</a>
-      <a href="#instrucoes" class="btn btn-outline-dark btn-lg mt-3">Como Jogar</a>
-    </div>
-  </header>
-
-  <!-- Features Section -->
-  <section class="features-section text-center mt-3">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h3>Fácil de Usar</h3>
-            <p>Professores podem adicionar palavras rapidamente para os alunos jogarem.</p>
-          </div>
+        <div class="container">
+            <h1 class="display-4">Jogo da Forca Educativa</h1>
+            <p class="lead ">Aprenda enquanto se diverte! Ideal para professores e alunos.</p>
+            <a href="#jogar" class="btn btn-light btn-lg mt-3">Jogar Agora</a>
+            <a href="#instrucoes" class="btn btn-outline-dark btn-lg mt-3">Como Jogar</a>
         </div>
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h3>Interativo</h3>
-            <p>Controle os jogadores e veja quem está ganhando em tempo real.</p>
-          </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features-section text-center mt-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h3>Fácil de Usar</h3>
+                        <p>Professores podem adicionar palavras rapidamente para os alunos jogarem.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h3>Interativo</h3>
+                        <p>Controle os jogadores e veja quem está ganhando em tempo real.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h3>Educacional</h3>
+                        <p>Use o jogo para ensinar novas palavras e melhorar o vocabulário dos alunos.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h3>Educacional</h3>
-            <p>Use o jogo para ensinar novas palavras e melhorar o vocabulário dos alunos.</p>
-          </div>
+    </section>
+
+    <!-- Game Section -->
+    <section id="jogar" class="text-center py-5 bg-light mt-4">
+        <div class="container">
+            <h2>Comece a Jogar</h2>
+            <p class="lead">Clique no botão abaixo para iniciar o jogo da forca e desafiar seus conhecimentos!</p>
+            <a href="#" class="btn btn-primary btn-lg">Iniciar Jogo</a>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Game Section -->
-  <section id="jogar" class="text-center py-5 bg-light mt-4">
-    <div class="container">
-      <h2>Comece a Jogar</h2>
-      <p class="lead">Clique no botão abaixo para iniciar o jogo da forca e desafiar seus conhecimentos!</p>
-      <a href="#" class="btn btn-primary btn-lg">Iniciar Jogo</a>
-    </div>
-  </section>
+    <!-- Instruções Section -->
+    <section id="instrucoes" class="text-center py-5">
+        <div class="container">
+            <h2>Como Jogar</h2>
+            <p class="lead">O jogo da forca é simples: o professor escolhe uma palavra, e os jogadores tentam adivinhar
+                letra por letra.</p>
+            <ul class="list-unstyled">
+                <li><strong>Passo 1:</strong> O professor adiciona palavras ao sistema.</li>
+                <li><strong>Passo 2:</strong> Os jogadores tentam adivinhar a palavra.</li>
+                <li><strong>Passo 3:</strong> Cada erro traz o jogador mais perto da forca!</li>
+                <li><strong>Passo 4:</strong> Ganhe acertando a palavra antes de completar a forca.</li>
+            </ul>
+        </div>
+    </section>
 
-  <!-- Instruções Section -->
-  <section id="instrucoes" class="text-center py-5">
-    <div class="container">
-      <h2>Como Jogar</h2>
-      <p class="lead">O jogo da forca é simples: o professor escolhe uma palavra, e os jogadores tentam adivinhar letra por letra.</p>
-      <ul class="list-unstyled">
-        <li><strong>Passo 1:</strong> O professor adiciona palavras ao sistema.</li>
-        <li><strong>Passo 2:</strong> Os jogadores tentam adivinhar a palavra.</li>
-        <li><strong>Passo 3:</strong> Cada erro traz o jogador mais perto da forca!</li>
-        <li><strong>Passo 4:</strong> Ganhe acertando a palavra antes de completar a forca.</li>
-      </ul>
-    </div>
-  </section>
+    <!-- Professor Section -->
+    {% if request.user.is_authenticated %}
+        {% if is_professor %}
+            <section id="professor" class="text-center py-5 bg-light">
+                <div class="container">
+                    <h2>Professor</h2>
+                    <p class="lead">Adicione palavras e controle quem está jogando!</p>
+                    <a href="#" class="btn btn-outline-primary btn-lg">Adicionar Palavras</a>
+                </div>
+            </section>
+        {% endif %}
 
-  <!-- Professor Section -->
-	{% if request.user.is_authenticated %}
-		{% if is_professor %}
-    <section id="professor" class="text-center py-5 bg-light">
-    <div class="container">
-      <h2>Professor</h2>
-      <p class="lead">Adicione palavras e controle quem está jogando!</p>
-      <a href="#" class="btn btn-outline-primary btn-lg">Adicionar Palavras</a>
-    </div>
-  </section>	
-  {% endif %} 	
-	
-		
-	{% endif %} 
-  
-  
 
-  <footer class="text-center py-4">
-    <p>© 2024 Jogo da Forca Educativa. Todos os direitos reservados.</p>
-  </footer>
-{% endblock %}
+    {% endif %}
 
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-dnJntIbEDK3DctzOk+GrmSsqXgX8LDotAw2n8tXYCBw0UJO1YJgUBOpW7oFHTN10" crossorigin="anonymous"></script>
+
+
+    <footer class="text-center py-4">
+        <p>© 2024 Jogo da Forca Educativa. Todos os direitos reservados.</p>
+    </footer>
 {% endblock %}
 
