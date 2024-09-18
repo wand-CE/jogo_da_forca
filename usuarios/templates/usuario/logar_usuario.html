@@ -1,36 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load form_filters %}
 {% block conteudo %}
-<article class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <h2 class="text-center">Log-in</h2>
+    <article class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4  shadow-lg p-4 bg-white rounded">
+                <h2 class="text-center mb-4">Log-in</h2>
 
-            {% if form.errors %}
-                <div class="alert alert-danger" role="alert">
-                    <strong>Erro:</strong> Verifique seu usuário e senha e tente novamente!
-                </div>
-            {% else %}
-                <h4 class="text-center">Use o formulário abaixo para entrar:</h4>
-            {% endif %}
+                {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Erro:</strong> Verifique seu usuário e senha e tente novamente!
+                    </div>
+                {% else %}
+                    <h4 class="text-center mb-4">Use o formulário abaixo para entrar:</h4>
+                {% endif %}
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group mb-3">
-                    {{ form.username.label_tag }}
-                    {{ form.username }}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        {{ form.username.label_tag }}
+                        {{ form.username|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form.password.label_tag }}
+                        {{ form.password|add_class:"form-control" }}
+                    </div>
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <div class="d-grid gap-2 mb-3">
+                        <input type="submit" class="btn btn-primary btn-block" value="Entrar">
+                    </div>
+                </form>
+
+                <div class="text-center">
+                    <p>Não tem uma conta? <a href="{% url 'registrarUsuario' %}" class="btn btn-secondary">Cadastrar</a>
+                    </p>
                 </div>
-                <div class="form-group mb-3">
-                    {{ form.password.label_tag }}
-                    {{ form.password }}
-                </div>
-                <input type="hidden" name="next" value="{{ next }}">
-                <div class="d-grid gap-2">
-                    <input type="submit" class="btn btn-primary btn-block" value="Entrar">
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</article>
+    </article>
 {% endblock %}

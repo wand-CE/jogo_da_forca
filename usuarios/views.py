@@ -19,16 +19,17 @@ class CriarUsuarioView(CreateView):
             grupo, created = Group.objects.get_or_create(name=form.cleaned_data['tipo_usuario'])
             usuario = form.save()
             usuario.groups.add(grupo)
-            print(usuario)
             messages.success(self.request, f'Usuário {usuario.username} cadastrado com sucesso!')
             return super().form_valid(form)
 
-        except Exception:
+        except Exception as e:
+            print(e)
             return self.form_invalid(form)
 
     def form_invalid(self, form):
         messages.error(self.request,
                        'Não foi possível cadastrar o usuário!!!')
+        print(form)
         return super().form_invalid(form)
 
 
