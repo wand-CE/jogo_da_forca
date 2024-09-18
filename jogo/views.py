@@ -1,13 +1,13 @@
 import random
 
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.shortcuts import render, get_object_or_404
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from jogo.forms import LetraForm
-from jogo.models import Tema, Palavra, Jogo, Letra
+from jogo.models import Jogo, Letra
+from temaProfessor.models import Tema, Palavra
 
 
 # Create your views here.
@@ -43,10 +43,10 @@ class JogoForcaView(View):
         jogador = request.user if request.user.is_authenticated else None
 
         # Cria um novo jogo para o jogador
-        jogo = Jogo.objects.create(
-            palavra=palavra,
-            jogador=jogador,
-        )
+        if jogador:
+            jogo = Jogo.objects.create(palavra=palavra, jogador=jogador, )
+        else:
+            jogo = Jogo.objects.create(palavra=palavra)
 
         context = {
             'tema': tema,

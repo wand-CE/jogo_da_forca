@@ -1,6 +1,5 @@
 from django.contrib import admin
-
-from jogo.models import Tema, Palavra
+from temaProfessor.models import Tema, Palavra
 
 
 @admin.register(Tema)
