@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 
-from jogo.models import Tema
+from temaProfessor.models import Tema
 
 
 class LetraForm(forms.Form):

@@ -19,6 +19,7 @@ class CriarUsuarioView(CreateView):
             grupo, created = Group.objects.get_or_create(name=form.cleaned_data['tipo_usuario'])
             usuario = form.save()
             usuario.groups.add(grupo)
+            print(usuario)
             messages.success(self.request, f'Usuário {usuario.username} cadastrado com sucesso!')
             return super().form_valid(form)
 
@@ -58,5 +59,3 @@ class DeslogarUsuarioView(View):
             logout(request)
             messages.success(self.request, f'Usuário Deslogado!')
         return redirect(self.success_url)
-
-
