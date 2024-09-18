@@ -1,0 +1,76 @@
+<form method="post" id="tema-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3>Adicionar Palavras</h3>
+    <div>
+        <input type="text" id="palavra-input" placeholder="Digite uma palavra">
+        <button type="button" id="add-palavra-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square"
+                 viewBox="0 0 16 16">
+                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+            </svg>
+        </button>
+    </div>
+
+    <table id="palavras-tabela">
+        <thead>
+        <tr>
+            <th>Palavra</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Linhas de palavras adicionadas aparecerão aqui -->
+        </tbody>
+    </table>
+
+    <button type="submit">Criar Tema</button>
+</form>
+
+<script>
+    // JavaScript para manipular a tabela de palavras
+    document.getElementById('add-palavra-btn').addEventListener('click', function () {
+        const palavraInput = document.getElementById('palavra-input');
+        const palavra = palavraInput.value.trim();
+
+        if (palavra) {
+            const tabela = document.getElementById('palavras-tabela').getElementsByTagName('tbody')[0];
+            const novaLinha = tabela.insertRow();
+
+            // Coluna com a palavra
+            const cell1 = novaLinha.insertCell(0);
+            cell1.textContent = palavra;
+
+            // Coluna com o botão de remover
+            const cell2 = novaLinha.insertCell(1);
+            const removeBtn = document.createElement('button');
+            removeBtn.innerHTML = '&times;';
+            removeBtn.onclick = function () {
+                tabela.deleteRow(novaLinha.rowIndex - 1);
+            };
+            cell2.appendChild(removeBtn);
+
+            // Limpar o input
+            palavraInput.value = '';
+        }
+    });
+
+    // Submeter as palavras junto com o formulário
+    document.getElementById('tema-form').addEventListener('submit', function (event) {
+        const tabela = document.getElementById('palavras-tabela').getElementsByTagName('tbody')[0];
+        const palavras = [];
+
+        for (let i = 0, row; row = tabela.rows[i]; i++) {
+            palavras.push(row.cells[0].textContent);
+        }
+
+        // Criar um input hidden para enviar as palavras
+        const inputPalavras = document.createElement('input');
+        inputPalavras.type = 'hidden';
+        inputPalavras.name = 'palavras';
+        inputPalavras.value = JSON.stringify(palavras);
+        this.appendChild(inputPalavras);
+    });
+</script>

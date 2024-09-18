@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <article>
+        <form method="POST">
+            {% csrf_token %}
+            Tem certeza que deseja excluir o Tema {{ tema }}?
+            <br>
+            <br>
+            <div class="grid">
+                <input type="submit" value="Excluir" class="secondary">
+                <div>
+                    <a href="{% url 'listaTemaProfessor' %}">Cancelar</a>
+                </div>
+            </div>
+        </form>
+    </article>
+
+{% endblock conteudo %}

@@ -12,7 +12,8 @@ from django.views.generic import TemplateView, ListView, DetailView, FormView
 from xhtml2pdf import pisa
 
 from jogo.forms import LetraForm, RelatorioFiltroForm
-from jogo.models import Tema, Palavra, Jogo, Letra
+from jogo.models import Jogo, Letra
+from temaProfessor.models import Tema, Palavra
 from jogo.util import GeraPDFMixin
 from jogo_da_forca import settings
 
@@ -56,10 +57,10 @@ class JogoForcaView(View):
         jogador = request.user if request.user.is_authenticated else None
 
         # Cria um novo jogo para o jogador
-        jogo = Jogo.objects.create(
-            palavra=palavra,
-            jogador=jogador,
-        )
+        if jogador:
+            jogo = Jogo.objects.create(palavra=palavra, jogador=jogador, )
+        else:
+            jogo = Jogo.objects.create(palavra=palavra)
 
         context = {
             'tema': tema,
