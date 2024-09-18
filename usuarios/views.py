@@ -58,3 +58,5 @@ class DeslogarUsuarioView(View):
             logout(request)
             messages.success(self.request, f'Usuário Deslogado!')
         return redirect(self.success_url)
+
+

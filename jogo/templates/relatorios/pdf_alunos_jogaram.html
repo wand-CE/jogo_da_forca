@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Alunos que Jogaram</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Alunos que Jogaram</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Jogador</th>
+                <th>Tema</th>
+                <th>Palavra</th>
+                <th>Data do Jogo</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jogo in jogos %}
+            <tr>
+                <td>{{ jogo.jogador.get_full_name }}</td>
+                <td>{{ jogo.palavra.tema.nome }}</td>
+                <td>{{ jogo.palavra.palavra }}</td>
+                <td>{{ jogo.data_jogo|date:"d/m/Y H:i" }}</td>
+                <td>{{ jogo.calcular_resultado }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhum jogo encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,34 +1,47 @@
 {% extends 'base.html' %}
 {% block conteudo %}
-    <h1>Jogo da Forca: {{ tema.nome }}</h1>
-    <p>Criado por: {{ tema.criado_por.username }}</p>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Jogo da Forca: {{ tema.nome }}</h1>
+        <p class="text-center">Criado por: <strong>{{ tema.criado_por.username }}</strong></p>
 
-    <div id="jogo-container">
-        <p id="palavra">
-            {% for letra in palavra %}
-                <span class="letra" data-letra="{{ letra }}">_</span>
-            {% endfor %}
-        </p>
+        <div id="jogo-container" class="mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <p id="palavra" class="display-4 text-center">
+                        {% for letra in palavra %}
+                            <span class="letra" data-letra="{{ letra }}">_</span>
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
 
-        <form id="forca-form" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="jogo_id" value="{{ jogo_id }}">
-            {{ form.as_p }}
-            <button type="submit">Enviar</button>
-        </form>
+            <form id="forca-form" method="post" class="mt-4">
+                {% csrf_token %}
+                <input type="hidden" name="jogo_id" value="{{ jogo_id }}">
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
 
-        <h2>Letras Erradas:</h2>
-        <p id="erros">
-            {% for letra in erros %}
-                <span class="letra">{{ letra }}</span>
-            {% endfor %}
-        </p>
+            <div class="mt-5">
+                <h2 class="text-center">Letras Erradas:</h2>
+                <p id="erros" class="text-center text-danger font-weight-bold">
+                    {% for letra in erros %}
+                        <span class="letra">{{ letra }}</span>
+                    {% endfor %}
+                </p>
+            </div>
 
-        <h2>Resultado:</h2>
-        <p id="resultado">{{ resultado }}</p>
+            <div class="mt-5">
+                <h2 class="text-center">Resultado:</h2>
+                <p id="resultado" class="text-center text-success display-5">{{ resultado }}</p>
+            </div>
+        </div>
+    <a href="{% url 'jogar_relatorio' %}" class="btn btn-secondary">Gerar PDF Atividade</a>
     </div>
-
-    <a href="{% url 'listaTemas' %}">Voltar à lista de temas</a>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -59,7 +72,6 @@
                 const formData = new FormData(form);
 
                 // Adiciona o ID do jogo ao FormData, se ainda não estiver incluído
-                // Isso é importante caso o campo não esteja presente no formulário HTML inicial
                 const jogoIdInput = document.querySelector('input[name="jogo_id"]');
                 if (jogoIdInput) {
                     formData.append('jogo_id', jogoIdInput.value);
@@ -85,7 +97,6 @@
                         updateResultado(data.resultado);
                     })
                     .catch(error => console.error('Error:', error));
-
             });
         });
     </script>
