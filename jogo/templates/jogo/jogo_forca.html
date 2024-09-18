@@ -1,4 +1,29 @@
 {% extends 'base.html' %}
+{% block styles %}
+    <style>
+        /* Estilos principais para o teclado QWERTY */
+        .qwerty-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .letra-btn {
+            width: 45px;
+            height: 45px;
+            font-size: 16px;
+        }
+
+        /* Ajustes para telas menores que 507px */
+        @media (max-width: 507px) {
+            .letra-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+        }
+    </style>
+{% endblock styles %}
 {% block conteudo %}
     <div class="container mt-5">
         <h1 class="text-center mb-4">Jogo da Forca: {{ tema.nome }}</h1>
@@ -9,30 +34,36 @@
                 <div class="col-md-8">
                     <p id="palavra" class="display-4 text-center">
                         {% for letra in palavra %}
-                            <span class="letra" data-letra="{{ letra }}">_</span>
+                            <span class="letra" data-letra-correta="{{ letra }}">_</span>
                         {% endfor %}
                     </p>
                 </div>
             </div>
 
-            <form id="forca-form" method="post" class="mt-4">
-                {% csrf_token %}
-                <input type="hidden" name="jogo_id" value="{{ jogo_id }}">
-                <div class="form-group">
-                    {{ form.as_p }}
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Enviar</button>
-                </div>
-            </form>
-
-            <div class="mt-5">
-                <h2 class="text-center">Letras Erradas:</h2>
-                <p id="erros" class="text-center text-danger font-weight-bold">
-                    {% for letra in erros %}
-                        <span class="letra">{{ letra }}</span>
+            <div id="teclado" class="text-center">
+                <!-- Primeira linha do teclado QWERTY -->
+                <div class="qwerty-row">
+                    {% for letra in "QWERTYUIOP" %}
+                        <button class="btn btn-outline-primary m-1 letra-btn"
+                                data-letra="{{ letra }}">{{ letra }}</button>
                     {% endfor %}
-                </p>
+                </div>
+
+                <!-- Segunda linha do teclado QWERTY -->
+                <div class="qwerty-row">
+                    {% for letra in "ASDFGHJKL" %}
+                        <button class="btn btn-outline-primary m-1 letra-btn"
+                                data-letra="{{ letra }}">{{ letra }}</button>
+                    {% endfor %}
+                </div>
+
+
+                <div class="qwerty-row">
+                    {% for letra in "ZXCVBNM" %}
+                        <button class="btn btn-outline-primary m-1 letra-btn"
+                                data-letra="{{ letra }}">{{ letra }}</button>
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="mt-5">
@@ -45,58 +76,88 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const palavraElement = document.getElementById('palavra');
-            const errosElement = document.getElementById('erros');
             const resultadoElement = document.getElementById('resultado');
-            const form = document.getElementById('forca-form');
+            const teclado = document.getElementById('teclado');
 
             function updatePalavra(acertos) {
                 palavraElement.querySelectorAll('.letra').forEach(span => {
-                    const letra = span.dataset.letra.toUpperCase();
-                    span.textContent = acertos.includes(letra) ? letra : '_';
+                    const letra = span.dataset.letraCorreta.toUpperCase();
+                    span.textContent = acertos.includes(letra) ? letra : "_";
+                });
+
+                acertos.forEach(letraCerta => {
+                    let buttonLetra = document.querySelector(`button[data-letra='${letraCerta}']`);
+                    changeButtonClass(buttonLetra, "btn-outline-primary", "btn-success");
                 });
             }
 
+
             function updateErros(erros) {
-                errosElement.innerHTML = erros.map(letra => `<span class="letra">${letra}</span>`).join('');
+                erros.forEach(letraErrada => {
+                    let buttonLetra = document.querySelector(`button[data-letra='${letraErrada}']`);
+                    changeButtonClass(buttonLetra, "btn-outline-primary", "btn-danger");
+                });
             }
+
+            function changeButtonClass(btn, beforeClass, afterClass) {
+                if (btn.classList.contains(beforeClass)) {
+                    btn.classList.remove(beforeClass);
+                    btn.classList.add(afterClass);
+                }
+            }
+
 
             function updateResultado(resultado) {
                 resultadoElement.textContent = resultado;
-            }
 
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
 
-                const form = document.querySelector('#forca-form'); // Certifique-se de que o ID do formulário está correto
-                const formData = new FormData(form);
-
-                // Adiciona o ID do jogo ao FormData, se ainda não estiver incluído
-                const jogoIdInput = document.querySelector('input[name="jogo_id"]');
-                if (jogoIdInput) {
-                    formData.append('jogo_id', jogoIdInput.value);
+                if (resultado !== "Em andamento") {
+                    let teclasTeclado = document.querySelectorAll("button[data-letra]");
+                    teclasTeclado.forEach(tecla => disableButton(tecla));
                 }
 
-                // Envia a solicitação fetch
-                fetch('{% url "jogarForca" tema_id=tema.id %}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert(data.error);
-                            return;
+            }
+
+            // Função para desativar os botões após o clique
+            function disableButton(button) {
+                button.disabled = true;
+                button.classList.add('disabled');
+            }
+
+            teclado.addEventListener('click', function (event) {
+                if (event.target.classList.contains('letra-btn')) {
+                    const letra = event.target.getAttribute('data-letra');
+                    console.log(letra);
+
+                    // Cria um objeto FormData para simular um envio de formulário
+                    const formData = new FormData();
+                    formData.append('letra', letra);
+                    formData.append('jogo_id', '{{ jogo_id }}'); // Inclui o ID do jogo
+
+                    // Envia a letra selecionada via fetch
+                    fetch('{% url "jogarForca" tema_id=tema.id %}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': '{{ csrf_token }}'
                         }
-                        updatePalavra(data.acertos);
-                        updateErros(data.erros);
-                        updateResultado(data.resultado);
                     })
-                    .catch(error => console.error('Error:', error));
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert(data.error);
+                                return;
+                            }
+                            updatePalavra(data.acertos);
+                            updateErros(data.erros);
+                            updateResultado(data.resultado);
+                            disableButton(event.target); // Desativa o botão clicado
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
             });
-        });
+        })
+        ;
     </script>
 {% endblock conteudo %}
