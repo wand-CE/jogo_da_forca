@@ -7,8 +7,9 @@ from jogo_da_forca import settings
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
     path('temas/', views.ListarTemasView.as_view(), name='listaTemas'),
-    # path('tema/<int:pk>/', views.DetalharTemaView.as_view(), name='detalheTema'),
     path('jogar/<int:tema_id>/', views.JogoForcaView.as_view(), name='jogarForca'),
-    path('relatorio-alunos/pdf/', views.RelatorioAlunosJogaramView.as_view(), name='relatorio_alunos_pdf'),
-    path('gerar-pdf/<int:tema_id>/<int:palavra_id>/', views.GeraJogoForcaPDFView.as_view(), name='gerar_jogo_forca_pdf'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('relatorio-alunos/pdf/', views.RelatorioAlunosJogaramView.as_view(),
+         name='relatorio_alunos_pdf'),
+    path('gerar-pdf/<int:tema_id>/<int:palavra_id>/', views.GeraJogoForcaPDFView.as_view(),
+         name='gerar_jogo_forca_pdf'),
+]

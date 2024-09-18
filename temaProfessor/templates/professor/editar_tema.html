@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load form_filters %}
+{% load static %}
+{% block styles %}
+    <link href="{% static 'css/temas.css' %}" rel="stylesheet" type="text/css">
+{% endblock styles %}
 {% block conteudo %}
     <div class="container mt-4">
         <h2 class="mb-4">Cadastrar Tema</h2>

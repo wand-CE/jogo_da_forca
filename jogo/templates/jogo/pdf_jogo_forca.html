@@ -2,51 +2,57 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-	<meta charset="UTF-8">
-	<style>
-		body {
-			text-align: center; /* Centraliza todo o conteúdo do body */
-			font-family: Arial, sans-serif; /* Define uma fonte mais limpa */
-		}
-		h1 {
-			font-size: 2em; /* Tamanho do título */
-			margin-top: 20px; /* Espaço no topo para o título */
-			color: #333; /* Cor do texto do título */
-		}
-		
-		h2 {
-			font-size: 1.5em;
-			margin-top: 50px;
-			margin-bottom: 100px;
-		}
-		#palavra {
-			font-size: 3em; /* Aumenta o tamanho dos traços */
-			letter-spacing: 15px; /* Espaçamento entre os traços */
-			display: flex; /* Usa flexbox para centralização horizontal */
-			justify-content: center; /* Centraliza o conteúdo flex na horizontal */
-			height: 200px; /* Altura fixa para manter os traços centralizados verticalmente */
-			align-items: center; /* Centraliza o conteúdo flex na vertical */
-			margin-top: 50px; /* Espaço vertical antes dos traços */
-		}
-		.letra {
-			display: inline-block; /* Permite o espaçamento das letras */
-			margin: 0 10px; /* Espaço entre as letras */
-		}
-		img {
-			max-width: 100%; /* Garante que a imagem não ultrapasse a largura da tela */
-			height: auto; /* Mantém a proporção da imagem */
-		}
-	</style>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            text-align: center; /* Centraliza todo o conteúdo do body */
+            font-family: Arial, sans-serif; /* Define uma fonte mais limpa */
+        }
+
+        h1 {
+            font-size: 2em; /* Tamanho do título */
+            margin-top: 20px; /* Espaço no topo para o título */
+            color: #333; /* Cor do texto do título */
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-top: 50px;
+            margin-bottom: 100px;
+        }
+
+        #palavra {
+            font-size: 3em; /* Aumenta o tamanho dos traços */
+            letter-spacing: 15px; /* Espaçamento entre os traços */
+            display: flex; /* Usa flexbox para centralização horizontal */
+            justify-content: center; /* Centraliza o conteúdo flex na horizontal */
+            height: 200px; /* Altura fixa para manter os traços centralizados verticalmente */
+            align-items: center; /* Centraliza o conteúdo flex na vertical */
+            margin-top: 50px; /* Espaço vertical antes dos traços */
+        }
+
+        .letra {
+            display: inline-block; /* Permite o espaçamento das letras */
+            margin: 0 10px; /* Espaço entre as letras */
+        }
+
+        img {
+            max-width: 100%; /* Garante que a imagem não ultrapasse a largura da tela */
+            height: auto; /* Mantém a proporção da imagem */
+        }
+    </style>
+    <title>{{ palavra }}</title>
 </head>
 <body>
 <h1>Atividade Forca</h1>
 <p>Professor: {{ tema.criado_por }}</p>
 <h2>TEMA: {{ tema.nome }}</h2>
-<img src="{{ MEDIA_URL }}hangman-game-og-share.webp" alt="Hangman Game">
+<img height="200" src="{{ request.scheme }}://{{ request.get_host }}/media/hangman-game-og-share.webp"
+     alt="Hangman Game">
 <p id="palavra" class="display-4">
-	{% for letra in palavra %}
-		<span class="letra" data-letra="{{ letra }}">_</span>
-	{% endfor %}
+    {% for letra in palavra %}
+        <span class="letra" data-letra="{{ letra }}">_</span>
+    {% endfor %}
 </p>
 </body>
 </html>

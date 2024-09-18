@@ -35,11 +35,6 @@ class ListarTemasView(ListView):
     context_object_name = 'temas'
 
 
-class DetalharTemaView(DetailView):
-    template_name = "temas/detalhar_tema.html"
-    model = Tema
-
-
 class JogoForcaView(View):
     template_name = 'jogo/jogo_forca.html'
     form_class = LetraForm
@@ -152,7 +147,8 @@ class RelatorioAlunosJogaramView(GeraPDFMixin, ListView):
 
     def render_to_pdf(self):
         queryset = self.get_queryset()  # Carrega os dados do queryset
-        context = {'jogos': queryset, 'form': RelatorioFiltroForm(self.request.GET)}  # Passa os dados corretos para o contexto
+        context = {'jogos': queryset,
+                   'form': RelatorioFiltroForm(self.request.GET)}  # Passa os dados corretos para o contexto
         template = get_template(self.pdf_template_name)
         html = template.render(context)
         result = BytesIO()
@@ -165,13 +161,14 @@ class RelatorioAlunosJogaramView(GeraPDFMixin, ListView):
 class GeraJogoForcaPDFView(View):
     template_name = 'jogo/pdf_jogo_forca.html'
 
-    def get(self, request, tema_id, palavra_id,  *args, **kwargs):
+    def get(self, request, tema_id, palavra_id, *args, **kwargs):
         tema = get_object_or_404(Tema, id=tema_id)
         palavra = get_object_or_404(Palavra, id=palavra_id)
 
         context = {
             'tema': tema,
-            'palavra': palavra.palavra
+            'palavra': palavra.palavra,
+            'request': request,
         }
 
         return self.render_to_pdf(context)

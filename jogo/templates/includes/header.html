@@ -17,21 +17,19 @@
                 </li>
                 {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             {{ user.username }}
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {% if request.user|is_in_group:"professor" %}
+                        {% if request.user|is_in_group:"professor" %}
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{% url 'listaTemaProfessor' %}">Meus Temas</a></li>
-                            {% endif %}
-
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+                            </ul>
+                        {% else %}
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'listaTemas' %}">Temas Gerais</a></li>
+                            </ul>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-outline-danger" href="{% url 'deslogarUsuario' %}" role="button">
