@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .forca-container {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            margin: 0 auto;
+            border-left: 4px solid black;
+            border-top: 4px solid black;
+            margin-bottom: 50px;
+        }
+        .linha-palavra {
+            font-size: 24px;
+            letter-spacing: 10px;
+            margin-top: 20px;
+        }
+        .linha-palavra span {
+            border-bottom: 2px solid black;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>TEMA: {{ tema }}</h1>
+
+    <div class="forca-container">
+        <!-- Aqui poderia ir a imagem ou o desenho da forca -->
+    </div>
+
+    <div class="linha-palavra">
+        {% for letra in palavra %}
+            {% if letra in acertos %}
+                <span>{{ letra }}</span>
+            {% else %}
+                <span>&nbsp;&nbsp;</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+</body>
+</html>

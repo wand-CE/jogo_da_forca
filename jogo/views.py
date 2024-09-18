@@ -1,18 +1,32 @@
+import os
 import random
+from io import BytesIO
 
-from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import get_template
+from django.urls import reverse
+from django.utils import timezone
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, FormView
+from xhtml2pdf import pisa
 
-from jogo.forms import LetraForm
+from jogo.forms import LetraForm, RelatorioFiltroForm
 from jogo.models import Jogo, Letra
 from temaProfessor.models import Tema, Palavra
+from jogo.util import GeraPDFMixin
+from jogo_da_forca import settings
 
 
 # Create your views here.
 class HomePageView(TemplateView):
     template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['is_professor'] = user.groups.filter(name='Professor').exists()
+        return context
 
 
 class ListarTemasView(ListView):
@@ -102,3 +116,77 @@ class JogoForcaView(View):
             })
 
         return JsonResponse({'error': 'Dados inválidos.'}, status=400)
+
+
+class RelatorioAlunosJogaramView(GeraPDFMixin, ListView):
+    template_name = 'alunos_jogaram.html'  # Template para HTML
+    pdf_template_name = 'relatorios/pdf_alunos_jogaram.html'  # Template para PDF
+    model = Jogo
+    context_object_name = 'jogos'
+
+    def get_queryset(self):
+        form = RelatorioFiltroForm(self.request.GET)
+        jogos = Jogo.objects.all()
+
+        if form.is_valid():
+            tema = form.cleaned_data.get('tema')
+            data_inicio = form.cleaned_data.get('data_inicio')
+            data_fim = form.cleaned_data.get('data_fim')
+
+            if tema:
+                jogos = jogos.filter(palavra__tema=tema)
+            if data_inicio and data_fim:
+                jogos = jogos.filter(data_jogo__range=[data_inicio, data_fim])
+
+        return jogos.filter(jogador__isnull=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = RelatorioFiltroForm(self.request.GET)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('format') == 'pdf':
+            return self.render_to_pdf()
+        return super().get(request, *args, **kwargs)
+
+    def render_to_pdf(self):
+        queryset = self.get_queryset()  # Carrega os dados do queryset
+        context = {'jogos': queryset, 'form': RelatorioFiltroForm(self.request.GET)}  # Passa os dados corretos para o contexto
+        template = get_template(self.pdf_template_name)
+        html = template.render(context)
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode('UTF-8')), result)
+        if not pdf.err:
+            return HttpResponse(result.getvalue(), content_type='application/pdf')
+        return HttpResponse('Erro ao gerar o PDF.', status=500)
+
+
+class GeraJogoForcaPDFView(View):
+    template_name = 'jogo/pdf_jogo_forca.html'
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'tema': self.kwargs.get('tema'),
+            'palavra': self.kwargs.get('palavra'),
+            'acertos': self.request.GET.getlist('acertos')
+        }
+        return context
+
+    def get(self, request, *args, **kwargs):
+
+        context = self.get_context_data(**kwargs)
+
+        template = get_template(self.template_name)
+        html = template.render(context)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="jogo_forca.pdf"'
+
+
+        pisa_status = pisa.CreatePDF(BytesIO(html.encode("UTF-8")), dest=response)
+
+        if pisa_status.err:
+            return HttpResponse('Erro ao gerar o PDF', status=500)
+
+        return response
