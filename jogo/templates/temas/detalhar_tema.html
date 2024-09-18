@@ -10,14 +10,14 @@
 {% block conteudo %}
     <h1>Jogo da Forca</h1>
     <h2>Palavra do Tema: {{ palavra.palavra }}</h2>
-    
+
     <p><strong>Progresso:</strong></p>
     <p>
         {% for letra in palavra.palavra %}
             {% if letra in jogo.acertos.all|slice:":-1"|join:""|split:" " %}
-                {{ letra }} 
+                {{ letra }}
             {% else %}
-                _ 
+                _
             {% endif %}
         {% endfor %}
     </p>
@@ -25,7 +25,7 @@
     <p><strong>Letras Erradas:</strong></p>
     <p>
         {% for letra in jogo.erros.all %}
-            {{ letra.letra }} 
+            {{ letra.letra }}
         {% endfor %}
     </p>
 
