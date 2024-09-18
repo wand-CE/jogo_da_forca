@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+        {% if user.is_authenticated %}
+            <div>
+            <a href="{% url 'deslogarUsuario' %}" role="button">
+                <button>Sair</button>
+            </a>
+            <br>
+            <br>
+                <span>Seja Bem Vindo, {{ user.username }}</span>
+            </div>
+        {% else %}
+            <a href="{% url 'registrarUsuario' %}" role="button">
+                <button>Registrar usuário</button>
+            </a>
+            <a href="{% url 'logarUsuario' %}" role="button">
+                <button>Logar usuário</button>
+
+            </a>
+        {% endif %}
+    </div>
+{% endblock conteudo %}
+

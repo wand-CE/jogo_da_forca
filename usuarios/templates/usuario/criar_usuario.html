@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+        <div>
+            <br>
+            <br>
+            <br><br>
+            <br>
+            <br><br>
+            <br>
+            <br><br>
+            <br>
+            <br>
+            <a href="{% url 'registrarUsuario' %}" role="button">
+                <button>Registrar usuário</button>
+            </a>
+            <a href="{% url 'logarUsuario' %}" role="button">
+                <button>Logar usuário</button>
+            </a>
+            <br>
+            <h3> Registrar usuário</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <br>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+{% endblock conteudo %}

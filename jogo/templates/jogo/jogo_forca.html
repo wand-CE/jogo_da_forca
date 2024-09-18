@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <h1>Jogo da Forca: {{ tema.nome }}</h1>
+    <p>Criado por: {{ tema.criado_por.username }}</p>
+
+    <div id="jogo-container">
+        <p id="palavra">
+            {% for letra in palavra %}
+                <span class="letra" data-letra="{{ letra }}">_</span>
+            {% endfor %}
+        </p>
+
+        <form id="forca-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="jogo_id" value="{{ jogo_id }}">
+            {{ form.as_p }}
+            <button type="submit">Enviar</button>
+        </form>
+
+        <h2>Letras Erradas:</h2>
+        <p id="erros">
+            {% for letra in erros %}
+                <span class="letra">{{ letra }}</span>
+            {% endfor %}
+        </p>
+
+        <h2>Resultado:</h2>
+        <p id="resultado">{{ resultado }}</p>
+    </div>
+
+    <a href="{% url 'listaTemas' %}">Voltar à lista de temas</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const palavraElement = document.getElementById('palavra');
+            const errosElement = document.getElementById('erros');
+            const resultadoElement = document.getElementById('resultado');
+            const form = document.getElementById('forca-form');
+
+            function updatePalavra(acertos) {
+                palavraElement.querySelectorAll('.letra').forEach(span => {
+                    const letra = span.dataset.letra.toUpperCase();
+                    span.textContent = acertos.includes(letra) ? letra : '_';
+                });
+            }
+
+            function updateErros(erros) {
+                errosElement.innerHTML = erros.map(letra => `<span class="letra">${letra}</span>`).join('');
+            }
+
+            function updateResultado(resultado) {
+                resultadoElement.textContent = resultado;
+            }
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const form = document.querySelector('#forca-form'); // Certifique-se de que o ID do formulário está correto
+                const formData = new FormData(form);
+
+                // Adiciona o ID do jogo ao FormData, se ainda não estiver incluído
+                // Isso é importante caso o campo não esteja presente no formulário HTML inicial
+                const jogoIdInput = document.querySelector('input[name="jogo_id"]');
+                if (jogoIdInput) {
+                    formData.append('jogo_id', jogoIdInput.value);
+                }
+
+                // Envia a solicitação fetch
+                fetch('{% url "jogarForca" tema_id=tema.id %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        updatePalavra(data.acertos);
+                        updateErros(data.erros);
+                        updateResultado(data.resultado);
+                    })
+                    .catch(error => console.error('Error:', error));
+
+            });
+        });
+    </script>
+{% endblock conteudo %}

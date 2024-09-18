@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    {% for tema in temas %}
+        <li>
+            <a href="{% url 'jogarForca' tema.pk %}">{{ tema.nome }}</a>
+        </li>
+    {% empty %}
+        <li>Sem temas Cadastrados!!!</li>
+    {% endfor %}
+
+{% endblock conteudo %}
