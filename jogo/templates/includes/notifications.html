@@ -1,0 +1,12 @@
+<div id="notifications" style="display: {% if messages %}block{% else %}none{% endif %};">
+    <div class="header">
+        <strong>Notificação</strong>
+        <i class="bi bi-x closeNotificationButton"  onclick="document.querySelector('#notifications').remove()"
+           style="position: absolute;right: 10px;"></i>
+    </div>
+    {% for message in messages %}
+        <div style="color: {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}red{% else %}green{% endif %};">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
