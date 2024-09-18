@@ -40,7 +40,7 @@
         <div class="container">
             <h2>Comece a Jogar</h2>
             <p class="lead">Clique no botão abaixo para iniciar o jogo da forca e desafiar seus conhecimentos!</p>
-            <a href="#" class="btn btn-primary btn-lg">Iniciar Jogo</a>
+            <a href="{% url 'listaTemas' %}" class="btn btn-primary btn-lg">Iniciar Jogo</a>
         </div>
     </section>
 
@@ -66,7 +66,7 @@
                 <div class="container">
                     <h2>Professor</h2>
                     <p class="lead">Adicione palavras e controle quem está jogando!</p>
-                    <a href="#" class="btn btn-outline-primary btn-lg">Adicionar Palavras</a>
+                    <a href="{% url 'listaTemaProfessor' %}" class="btn btn-outline-primary btn-lg">Adicionar Temas</a>
                 </div>
             </section>
         {% endif %}

@@ -165,28 +165,24 @@ class RelatorioAlunosJogaramView(GeraPDFMixin, ListView):
 class GeraJogoForcaPDFView(View):
     template_name = 'jogo/pdf_jogo_forca.html'
 
-    def get_context_data(self, **kwargs):
+    def get(self, request, tema_id, palavra_id,  *args, **kwargs):
+        tema = get_object_or_404(Tema, id=tema_id)
+        palavra = get_object_or_404(Palavra, id=palavra_id)
+
         context = {
-            'tema': self.kwargs.get('tema'),
-            'palavra': self.kwargs.get('palavra'),
-            'acertos': self.request.GET.getlist('acertos')
+            'tema': tema,
+            'palavra': palavra.palavra
         }
-        return context
 
-    def get(self, request, *args, **kwargs):
+        return self.render_to_pdf(context)
 
-        context = self.get_context_data(**kwargs)
-
+    def render_to_pdf(self, context):
         template = get_template(self.template_name)
         html = template.render(context)
-
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="jogo_forca.pdf"'
 
-
         pisa_status = pisa.CreatePDF(BytesIO(html.encode("UTF-8")), dest=response)
-
         if pisa_status.err:
             return HttpResponse('Erro ao gerar o PDF', status=500)
-
         return response
