@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 from xhtml2pdf import pisa
 
-from jogo.forms import LetraForm, RelatorioFiltroForm
+from jogo.forms import LetraForm, RelatorioFiltroForm, TemaFiltroForm
 from jogo.models import Jogo, Letra
 from temaProfessor.models import Tema, Palavra
 from jogo.util import GeraPDFMixin
@@ -33,6 +33,21 @@ class ListarTemasView(ListView):
     model = Tema
     template_name = 'temas/listar_temas.html'
     context_object_name = 'temas'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()  # Obtém a queryset padrão de Tema
+        self.form = TemaFiltroForm(self.request.GET)  # Cria uma instância do formulário com os dados GET
+        if self.form.is_valid():
+            if self.form.cleaned_data['tema']:
+                queryset = queryset.filter(id=self.form.cleaned_data['tema'].id)
+            if self.form.cleaned_data['professor']:
+                queryset = queryset.filter(criado_por=self.form.cleaned_data['professor'])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form  # Adiciona o formulário ao contexto para ser usado no template
+        return context
 
 
 class JogoForcaView(View):
