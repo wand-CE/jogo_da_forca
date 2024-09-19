@@ -68,7 +68,25 @@
 
             <div class="mt-5">
                 <h2 class="text-center">Resultado:</h2>
-                <p id="resultado" class="text-center text-success display-5">{{ resultado }}</p>
+                <p id="resultado" class="text-center text-primary display-5">{{ resultado }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalEndgame" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog endgame">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="endgametitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span id="endgameBody"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'jogarForca' tema.id %}">
+                        <button type="button" class="btn btn-primary">Jogar Novamente</button>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -80,6 +98,7 @@
             const teclado = document.getElementById('teclado');
 
             function updatePalavra(acertos) {
+                console.log(acertos);
                 palavraElement.querySelectorAll('.letra').forEach(span => {
                     const letra = span.dataset.letraCorreta.toUpperCase();
                     span.textContent = acertos.includes(letra) ? letra : "_";
@@ -110,10 +129,22 @@
             function updateResultado(resultado) {
                 resultadoElement.textContent = resultado;
 
-
                 if (resultado !== "Em andamento") {
+                    document.getElementById("endgametitle").textContent = resultado;
+                    if (resultado === "Vencedor") {
+                        resultadoElement.classList.remove("text-primary")
+                        resultadoElement.classList.add("text-success")
+                        document.getElementById("endgameBody").textContent = "Parabéns Você Ganhou🥳🥳🥳";
+                    } else if (resultado === "Perdedor") {
+                        resultadoElement.classList.remove("text-primary")
+                        resultadoElement.classList.add("text-danger")
+                        document.getElementById("endgameBody").textContent = "Não foi dessa vez🙁🙁🙁";
+                    }
+
                     let teclasTeclado = document.querySelectorAll("button[data-letra]");
                     teclasTeclado.forEach(tecla => disableButton(tecla));
+                    const modal = new bootstrap.Modal(document.getElementById('modalEndgame'));
+                    modal.show();
                 }
 
             }
@@ -127,7 +158,6 @@
             teclado.addEventListener('click', function (event) {
                 if (event.target.classList.contains('letra-btn')) {
                     const letra = event.target.getAttribute('data-letra');
-                    console.log(letra);
 
                     // Cria um objeto FormData para simular um envio de formulário
                     const formData = new FormData();
@@ -145,6 +175,7 @@
                     })
                         .then(response => response.json())
                         .then(data => {
+                            console.log(data);
                             if (data.error) {
                                 alert(data.error);
                                 return;

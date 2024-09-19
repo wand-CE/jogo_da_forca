@@ -96,20 +96,16 @@ class JogoForcaView(View):
             letra = form.cleaned_data['letra'].upper()
             tema_id = kwargs.get('tema_id')
             tema = get_object_or_404(Tema, id=tema_id)
-            palavras = Palavra.objects.filter(tema=tema)
-
-            if not palavras:
-                return JsonResponse({'error': 'Nenhuma palavra encontrada para este tema.'}, status=400)
-
-            palavra = random.choice(palavras)
-            jogador = request.user if request.user.is_authenticated else None
 
             # Obtém o ID do jogo do formulário
             jogo_id = request.POST.get('jogo_id')
+            jogador = request.user if request.user.is_authenticated else None
             jogo = get_object_or_404(Jogo, id=jogo_id, jogador=jogador)
 
+            palavra = jogo.palavra.palavra.upper()
+
             if letra and len(letra) == 1:
-                if letra in palavra.palavra.upper():
+                if letra in palavra:
                     jogo.acertos.add(Letra.objects.get_or_create(letra=letra)[0])
                 else:
                     jogo.erros.add(Letra.objects.get_or_create(letra=letra)[0])
@@ -117,7 +113,7 @@ class JogoForcaView(View):
                 jogo.save()
 
             return JsonResponse({
-                'palavra': palavra.palavra,
+                'palavra': palavra,
                 'acertos': list(jogo.acertos.values_list('letra', flat=True)),
                 'erros': list(jogo.erros.values_list('letra', flat=True)),
                 'resultado': jogo.calcular_resultado(),
