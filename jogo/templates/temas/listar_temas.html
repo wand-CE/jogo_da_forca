@@ -2,69 +2,71 @@
 {% load user_tags %}
 {% load static %}
 {% block styles %}
-	<link href="{% static 'css/temas.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/temas.css' %}" rel="stylesheet" type="text/css">
 {% endblock styles %}
 {% block conteudo %}
-	<article class="container mt-5">
-		<form method="get" class="mb-4">
-			<div class="row justify-content-center mb-4">
-				<div class="col-md-4 mb-3">
-					{{ form.professor.label_tag }}
-					{{ form.professor }}
-				</div>
-				<div class="col-md-3 mb-3">
-					{{ form.tema.label_tag }}
-					{{ form.tema }}
-				</div>
-				<div class="d-flex justify-content-center">
-					<button type="submit" class="btn btn-primary ">Filtrar</button>
-				</div>
-			</div>
-		</form>
-		<div class="card p-5">
-			<h2 class="mb-4">Temas Gerais</h2>
-			<table class="table table-striped table-hover mx-auto">
-				<thead class="table-dark">
-				<tr>
-					<th scope="col">Tema</th>
-					<th scope="col">Jogar</th>
-					<th scope="col">Professor</th>
-				</tr>
-				</thead>
-				<tbody>
-				{% for tema in temas %}
-					<tr>
-						<td>{{ tema }}</td>
-						<td>
-							<a href="{% url 'jogarForca' tema.id %}" class="btn btn-outline-primary btn-sm">
-								<i class="bi bi-play-circle"></i>
-							</a>
-						</td>
-						<td> {{ tema.criado_por }} </td>
-					</tr>
-				{% empty %}
-					<tr>
-						<td colspan="3" class="text-center">Você ainda não possui temas cadastrados!</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-			<a href="{% url 'criarTema' %}" class="btn btn-primary">Cadastrar Tema</a>
-		</div>
-	</article>
+    <article class="container mt-5">
+        <form method="get" class="mb-4">
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-4 mb-3">
+                    {{ form.professor.label_tag }}
+                    {{ form.professor }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    {{ form.tema.label_tag }}
+                    {{ form.tema }}
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary ">Filtrar</button>
+                </div>
+            </div>
+        </form>
+        <div class="card p-5">
+            <h2 class="mb-4">Temas Gerais</h2>
+            <table class="table table-striped table-hover mx-auto">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col">Tema</th>
+                    <th scope="col">Jogar</th>
+                    <th scope="col">Professor</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tema in temas %}
+                    <tr>
+                        <td>{{ tema }}</td>
+                        <td>
+                            <a href="{% url 'jogarForca' tema.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-play-circle"></i>
+                            </a>
+                        </td>
+                        <td> {{ tema.criado_por }} </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">Não existem temas cadastrados!</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if request.user|is_in_group:"professor" %}
+                <a href="{% url 'criarTema' %}" class="btn btn-primary">Cadastrar Tema</a>
+            {% endif %}
+        </div>
+    </article>
 
-	<script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const professorSelect = document.querySelector('#id_professor'); 
-            const temaSelect = document.querySelector('#id_tema'); 
+            const professorSelect = document.querySelector('#id_professor');
+            const temaSelect = document.querySelector('#id_tema');
 
             professorSelect.addEventListener('change', function () {
                 fetch(`/temas-por-professor/?professor_id=${this.value}`)
                     .then(response => response.json())
                     .then(data => {
-                        
+
                         temaSelect.innerHTML = '<option value="">---------</option>';
-	                    
+
                         data.temas.forEach(function (tema) {
                             const option = document.createElement('option');
                             option.value = tema.id;
@@ -75,5 +77,5 @@
                     .catch(error => console.error('Erro ao buscar temas:', error));
             });
         });
-	</script>
+    </script>
 {% endblock conteudo %}
