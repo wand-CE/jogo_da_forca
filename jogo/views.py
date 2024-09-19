@@ -1,21 +1,19 @@
-import os
 import random
 from io import BytesIO
 
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import get_template
-from django.urls import reverse
-from django.utils import timezone
+
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView
 from xhtml2pdf import pisa
 
 from jogo.forms import LetraForm, RelatorioFiltroForm
 from jogo.models import Jogo, Letra
 from temaProfessor.models import Tema, Palavra
 from jogo.util import GeraPDFMixin
-from jogo_da_forca import settings
+from temaProfessor.views import ProfessorMixin
 
 
 # Create your views here.
@@ -113,15 +111,15 @@ class JogoForcaView(View):
         return JsonResponse({'error': 'Dados inválidos.'}, status=400)
 
 
-class RelatorioAlunosJogaramView(GeraPDFMixin, ListView):
-    template_name = 'alunos_jogaram.html'  # Template para HTML
+class RelatorioAlunosJogaramView(ProfessorMixin, GeraPDFMixin, ListView):
+    template_name = 'jogo/alunos_jogaram.html'  # Template para HTML
     pdf_template_name = 'relatorios/pdf_alunos_jogaram.html'  # Template para PDF
     model = Jogo
     context_object_name = 'jogos'
 
     def get_queryset(self):
         form = RelatorioFiltroForm(self.request.GET)
-        jogos = Jogo.objects.all()
+        jogos = Jogo.objects.filter(palavra__tema__criado_por=self.request.user)
 
         if form.is_valid():
             tema = form.cleaned_data.get('tema')

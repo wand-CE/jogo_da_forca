@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load form_filters %}
+{% block styles %}
+    <style>
+        /* Estilo para o container dos botões de rádio */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para cada rótulo de botão de rádio */
+        .radio-group label {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Estilo para os botões de rádio */
+        .radio-group input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+    </style>
+{% endblock styles %}
+{% block conteudo %}
+    <article class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4 shadow-lg p-4 bg-white rounded">
+                <h2 class="text-center mb-4">Editar Usuário</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for element in form %}
+                        <div class="form-group mb-3">
+                            {{ element.label_tag }}
+
+                            {% if element.errors %}
+                                {% if element.field.widget|is_radio_select %}
+                                    <!-- Caso seja um RadioSelect -->
+                                    <div>
+                                        {% for radio in element %}
+                                            <div>
+                                                {{ radio.tag }}
+                                                {{ radio.choice_label }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        {% for error in element.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <!-- Outros tipos de campos -->
+                                    {{ element|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback">
+                                        {% for error in element.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                {% if element.field.widget|is_radio_select %}
+                                    <!-- Caso seja um RadioSelect sem erros -->
+                                    <div class="mx-2">
+                                        {% for radio in element %}
+                                            <div>
+                                                {{ radio.tag }}
+                                                {{ radio.choice_label }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <!-- Outros tipos de campos sem erros -->
+                                    {{ element|add_class:"form-control" }}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="d-grid gap-2 mb-3">
+                        <input type="submit" class="btn btn-primary btn-block" value="Salvar">
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </article>
+{% endblock %}

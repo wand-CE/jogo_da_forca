@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block titulo %}Relatório de Alunos que Jogaram{% endblock %}
+
+{% block conteudo %}
+    <article class="container mt-5">
+        <h2>Relatório de Alunos que Jogaram</h2>
+        <form method="get">
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form.tema.label_tag }}
+                    {{ form.tema }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.data_inicio.label_tag }}
+                    {{ form.data_inicio }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.data_fim.label_tag }}
+                    {{ form.data_fim }}
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary mt-4">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-striped mt-4">
+            <thead>
+            <tr>
+                <th>Jogador</th>
+                <th>Tema</th>
+                <th>Palavra</th>
+                <th>Data do Jogo</th>
+                <th>Resultado</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for jogo in jogos %}
+                <tr>
+                    <td>{{ jogo.jogador.get_full_name }}</td>
+                    <td>{{ jogo.palavra.tema.nome }}</td>
+                    <td>{{ jogo.palavra.palavra }}</td>
+                    <td>{{ jogo.data_jogo|date:"d/m/Y H:i" }}</td>
+                    <td>{{ jogo.calcular_resultado }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Nenhum jogo encontrado.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="?format=pdf" class="btn btn-secondary">Baixar PDF</a>
+
+    </article>
+{% endblock %}

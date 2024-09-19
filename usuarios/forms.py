@@ -17,7 +17,13 @@ class UsuarioForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'tipo_usuario')
+        fields = ('first_name', 'last_name', 'username', 'email', 'tipo_usuario')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'required': 'required'}),
+            'last_name': forms.TextInput(attrs={'required': 'required'}),
+            'username': forms.TextInput(attrs={'required': 'required'}),
+            'email': forms.EmailInput(attrs={'required': 'required'}),
+        }
 
     def clean_password(self):
         password = self.cleaned_data.get("password")
@@ -36,7 +42,7 @@ class UsuarioForm(forms.ModelForm):
         if password and password2 and password != password2:
             self.add_error('password2', "As senhas não coincidem")
 
-        return cleaned_data
+        return super().clean()
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -49,3 +55,15 @@ class UsuarioForm(forms.ModelForm):
             user.save()
 
         return user
+
+
+class EditUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'username', 'email')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'required': 'required'}),
+            'last_name': forms.TextInput(attrs={'required': 'required'}),
+            'username': forms.TextInput(attrs={'required': 'required'}),
+            'email': forms.EmailInput(attrs={'required': 'required'}),
+        }

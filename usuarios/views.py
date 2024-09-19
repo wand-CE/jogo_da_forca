@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Group
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Group, User
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, View, FormView
+from django.views.generic import CreateView, View, FormView, UpdateView
 
-from usuarios.forms import UsuarioForm
+from usuarios.forms import UsuarioForm, EditUsuarioForm
 
 
 class CriarUsuarioView(CreateView):
@@ -60,3 +61,17 @@ class DeslogarUsuarioView(View):
             logout(request)
             messages.success(self.request, f'Usuário Deslogado!')
         return redirect(self.success_url)
+
+
+class EditarUsuarioView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = EditUsuarioForm
+    template_name = 'usuario/editar_usuario.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Dados do usuário atualizados com sucesso!')
+        return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        return self.request.user

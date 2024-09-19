@@ -21,15 +21,18 @@
                            data-bs-toggle="dropdown" aria-expanded="false">
                             {{ user.username }}
                         </a>
-                        {% if request.user|is_in_group:"professor" %}
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'editarUsuario' %}">Meus Dados</a></li>
+
+                            {% if request.user|is_in_group:"professor" %}
                                 <li><a class="dropdown-item" href="{% url 'listaTemaProfessor' %}">Meus Temas</a></li>
-                            </ul>
-                        {% else %}
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{% url 'listaTemas' %}">Temas Gerais</a></li>
-                            </ul>
-                        {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'relatorio_alunos_pdf' %}">Relatórios</a></li>
+                            {% else %}
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'listaTemas' %}">Temas Gerais</a></li>
+                                </ul>
+                            {% endif %}
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-outline-danger" href="{% url 'deslogarUsuario' %}" role="button">
