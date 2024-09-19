@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 from temaProfessor.models import Tema
@@ -9,7 +10,7 @@ class LetraForm(forms.Form):
 
 
 class RelatorioFiltroForm(forms.Form):
-    tema = forms.ModelChoiceField(queryset=Tema.objects.none(), required=False)
+    tema = forms.ModelChoiceField(queryset=Tema.objects.all(), required=False)
     data_inicio = forms.DateField(required=False, widget=forms.SelectDateWidget)
     data_fim = forms.DateField(required=False, widget=forms.SelectDateWidget)
 
@@ -19,3 +20,14 @@ class RelatorioFiltroForm(forms.Form):
         self.fields['tema'].queryset = Tema.objects.filter(criado_por=user)
         self.fields['data_inicio'].initial = timezone.now().date()
         self.fields['data_fim'].initial = timezone.now().date()
+
+
+class TemaFiltroForm(forms.Form):
+    tema = forms.ModelChoiceField(queryset=Tema.objects.all(), required=False)
+    professor = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='professor'), required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(TemaFiltroForm, self).__init__(*args, **kwargs)
+        self.fields['tema'].queryset = Tema.objects.all()
+        self.fields['professor'].queryset = User.objects.filter(groups__name='professor')
