@@ -127,13 +127,13 @@ class JogoForcaView(View):
 
 
 class RelatorioAlunosJogaramView(ProfessorMixin, GeraPDFMixin, ListView):
-    template_name = 'jogo/alunos_jogaram.html'  # Template para HTML
-    pdf_template_name = 'relatorios/pdf_alunos_jogaram.html'  # Template para PDF
+    template_name = 'jogo/alunos_jogaram.html'
+    pdf_template_name = 'relatorios/pdf_alunos_jogaram.html'
     model = Jogo
     context_object_name = 'jogos'
 
     def get_queryset(self):
-        form = RelatorioFiltroForm(self.request.GET)
+        form = RelatorioFiltroForm(self.request.GET, user=self.request.user)
         jogos = Jogo.objects.filter(palavra__tema__criado_por=self.request.user)
 
         if form.is_valid():
@@ -150,7 +150,7 @@ class RelatorioAlunosJogaramView(ProfessorMixin, GeraPDFMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = RelatorioFiltroForm(self.request.GET)
+        context['form'] = RelatorioFiltroForm(self.request.GET, user=self.request.user)
         return context
 
     def get(self, request, *args, **kwargs):
@@ -159,9 +159,9 @@ class RelatorioAlunosJogaramView(ProfessorMixin, GeraPDFMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def render_to_pdf(self):
-        queryset = self.get_queryset()  # Carrega os dados do queryset
+        queryset = self.get_queryset()
         context = {'jogos': queryset,
-                   'form': RelatorioFiltroForm(self.request.GET)}  # Passa os dados corretos para o contexto
+                   'form': RelatorioFiltroForm(self.request.GET)}
         template = get_template(self.pdf_template_name)
         html = template.render(context)
         result = BytesIO()

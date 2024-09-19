@@ -10,7 +10,7 @@ class LetraForm(forms.Form):
 
 
 class RelatorioFiltroForm(forms.Form):
-    tema = forms.ModelChoiceField(queryset=Tema.objects.none(), required=False)
+    tema = forms.ModelChoiceField(queryset=Tema.objects.all(), required=False)
     data_inicio = forms.DateField(required=False, widget=forms.SelectDateWidget)
     data_fim = forms.DateField(required=False, widget=forms.SelectDateWidget)
 
