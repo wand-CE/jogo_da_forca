@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load user_tags %}
 {% load static %}
 {% block styles %}
     <link href="{% static 'css/temas.css' %}" rel="stylesheet" type="text/css">
@@ -26,12 +27,14 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="2" class="text-center">Você ainda não possui temas cadastrados!</td>
+                    <td colspan="2" class="text-center">Sem temas cadastrados!</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        <!-- Bootstrap styled button for adding a new tema -->
-        <a href="{% url 'criarTema' %}" class="btn btn-primary">Cadastrar Tema</a>
+        {% if request.user|is_in_group:"professor" %}
+            <!-- Bootstrap styled button for adding a new tema -->
+            <a href="{% url 'criarTema' %}" class="btn btn-primary">Cadastrar Tema</a>
+        {% endif %}
     </div>
 {% endblock conteudo %}
