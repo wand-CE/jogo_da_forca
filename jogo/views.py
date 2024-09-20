@@ -1,9 +1,11 @@
 import random
 from io import BytesIO
 
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import get_template
+from django.urls import reverse
 
 from django.views import View
 from django.views.generic import TemplateView, ListView
@@ -52,9 +54,15 @@ class JogoForcaView(View):
     template_name = 'jogo/jogo_forca.html'
     form_class = LetraForm
 
+    # noinspection PyInterpreter
     def get(self, request, *args, **kwargs):
         tema_id = kwargs.get('tema_id')
         tema = get_object_or_404(Tema, id=int(tema_id))
+        if tema.estar_logado and not request.user.is_authenticated:
+            messages.error(request, 'Você deve estar logado pra acessar esse tema')
+            login_url = reverse('logarUsuario')
+            return redirect(f'{login_url}?next={request.path}')
+
         palavras = Palavra.objects.filter(tema=tema)
 
         if not palavras:

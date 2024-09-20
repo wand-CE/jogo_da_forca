@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group, User
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, View, FormView, UpdateView
 
 from usuarios.forms import UsuarioForm, EditUsuarioForm
@@ -47,6 +48,12 @@ class LogarUsuarioView(FormView):
         if user:
             login(self.request, user)
             messages.success(self.request, f'Bem-vindo, {username}!')
+
+            # Verifica se o parâmetro 'next' está presente
+            next_url = self.request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={self.request.get_host()}):
+                return redirect(next_url)
+
             return super().form_valid(form)
 
         messages.error(self.request, 'Usuário ou senha incorretos.')
