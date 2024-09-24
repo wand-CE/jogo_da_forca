@@ -69,3 +69,8 @@ Antes de iniciar, certifique-se de ter o Python 3.12 instalado em sua máquina. 
 7. Acesse a aplicação em `http://127.0.0.1:8000`.
 
 8. Aproveite!!!
+
+## Interface do Aplicativo
+
+![image](https://github.com/user-attachments/assets/b1574ebf-315e-4333-bcb4-5cad09c308b9)
+
