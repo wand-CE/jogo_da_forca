@@ -65,6 +65,9 @@
         </table>
         <a href="{% url 'criarTema' %}" class="btn btn-primary">Cadastrar Tema</a>
     </div>
+{% endblock conteudo %}
+
+{% block scripts %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const actionButtons = document.querySelectorAll('.table .btn');
@@ -75,4 +78,4 @@
             });
         });
     </script>
-{% endblock conteudo %}
+{% endblock scripts %}

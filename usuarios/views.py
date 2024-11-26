@@ -29,8 +29,7 @@ class CriarUsuarioView(CreateView):
             return self.form_invalid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request,
-                       'Não foi possível cadastrar o usuário!!!')
+        messages.error(self.request, 'Não foi possível cadastrar o usuário!!!')
         print(form)
         return super().form_invalid(form)
 

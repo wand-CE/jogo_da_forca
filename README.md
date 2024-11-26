@@ -42,6 +42,19 @@ Antes de iniciar, certifique-se de ter o Python 3.12 instalado em sua máquina. 
    cd jogo_da_forca
    ```
 
+3. Crie e ative um ambiente virtual com o Python:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate   # No Windows use: venv\Scripts\activate
+   ```
+
+4. Instale as dependências do projeto:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+   
    Este projeto utiliza um arquivo `.env` para armazenar variáveis de ambiente sensíveis. Para configurá-lo:
    1. Copie o arquivo `.envbase` para `.env`:
 
@@ -60,34 +73,24 @@ Antes de iniciar, certifique-se de ter o Python 3.12 instalado em sua máquina. 
       ```
       Após isso copie a chave gerada e cole no arquivo .env.
 
-4. Crie e ative um ambiente virtual com o Python:
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # No Windows use: venv\Scripts\activate
-   ```
 
-5. Instale as dependências do projeto:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-   
-6. Execute as migrações do banco de dados:
+5. Execute as migrações do banco de dados:
 
    ```bash
    python manage.py migrate
    ```
 
-7. Inicie o servidor de desenvolvimento:
+6. Inicie o servidor de desenvolvimento:
 
    ```bash
    python manage.py runserver
    ```
 
-8. Acesse a aplicação em `http://127.0.0.1:8000`.
+7. Acesse a aplicação em `http://127.0.0.1:8000`.
 
-9. Aproveite!!!
+
+8. Aproveite!!!
 
 ## Interface do Aplicativo
 
