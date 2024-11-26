@@ -20,14 +20,3 @@ class RelatorioFiltroForm(forms.Form):
         self.fields['tema'].queryset = Tema.objects.filter(criado_por=user)
         self.fields['data_inicio'].initial = timezone.now().date()
         self.fields['data_fim'].initial = timezone.now().date()
-
-
-class TemaFiltroForm(forms.Form):
-    tema = forms.ModelChoiceField(queryset=Tema.objects.all(), required=False)
-    professor = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='professor'), required=False)
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        super(TemaFiltroForm, self).__init__(*args, **kwargs)
-        self.fields['tema'].queryset = Tema.objects.all()
-        self.fields['professor'].queryset = User.objects.filter(groups__name='professor')
